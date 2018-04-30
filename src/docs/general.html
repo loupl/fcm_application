@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style text="type/css">
+      body {
+        font-family: Helvetica;
+      }
+
+      h1 {
+        text-align: center;
+        border-bottom: solid 2px;
+      }
+
+      .section {
+        border-bottom: solid 2px;
+        margin-right: 10px;
+      }
+
+      .section h2 {
+        text-align: left;
+      }
+
+      .section p {
+        text-align: justify;
+      }
+
+      .subsection {
+        margin-left: 30px;
+      }
+
+      .subsection p {
+        text-align: justify;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>General</h1>
+    <div class="section">
+      <h2>File Operations</h2>
+      <p>
+        Please note, for this version of the software only <b>FCS3.0</b> has been tested. Support for reading <code>.fcs</code> files is provided by the <a href="https://github.com/eyurtsev/fcsparser"> fcsparser</a> Python package, so all limitations with regards to files being readable are derived from this package.
+      </p>
+      <div class="subsection">
+        <h3>Opening a file</h3>
+        <p>
+          To open a file, please first choose an appropriate <code>.fcs</code> file stored on you computer. Following this step, you will be shown an overview of all the parameters that could be extracted from your file. Choose the parameters that you want to analyse. They will be the only parameters used for visualisation and clustering.
+        </p>
+      </div>
+      <div class="subsection">
+        <h3>Saving a file to .csv</h3>
+        <p>
+          You can save a file to the <code>.csv</code> format using the <code>Save to .csv</code> option. You will be asked to choose a location on your computer to which the file should be saved. You do not have to add the <code>.csv</code> file ending when typing the file name. Please note that you cannot use any other file endings when using this save option. <br>
+          Please note that all parameters available in the original file will be saved to the <code>.csv</code> file regardless of your selection. In case any outliers have been removed during the clustering, these will not be saved to the new <code>.csv</code> file.
+        </p>
+      </div>
+    </div>
+  </body>
+</html>

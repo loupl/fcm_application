@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 example 01</title>
+        <script type="text/javascript" src="../d3.v3.min.js"></script>
+        <script src="../d3.parcoords.js"></script>
+        <link rel="stylesheet" type="text/css" href="../d3.parcoords.css">
+    </head>
+    <body>
+        <div id="example" class="parcoords" style="width:1200px;height:600px"></div>
+        <script type="text/javascript">
+          var rawData;
+          var w = 500;
+          var h = 500;
+          var padding = 50;
+
+          var psv = d3.dsv(";", "text/plain");
+
+          psv("Specimen_001_1um.csv")
+            .row(function(d) {
+              return {
+                fsc_a : +d["FSC-A"],
+                ssc_a : +d["SSC-A"],
+                b530_30 : +d["B 530/30-A"],
+                b585_42 : +d["B 585/42-A"]};
+            })
+            .get(function(error, data) {
+              //console.log(data);
+              maxVal = data[0].fsc_a;
+              maxInd = 0;
+              for (var i=1; i<data.length; i++){
+                if (data[i].fsc_a > maxVal) {
+                  maxVal = data[i].fsc_a;
+                  maxInd = i;
+                }
+              }
+              data.splice(maxInd,1);
+
+              var pc = d3.parcoords()("#example")
+                         .data(data)
+                         .mode("queue")
+                         .render()
+                         .brushMode("1D-axes")
+                         .reorderable();
+                         //.createAxes();
+            });
+
+          /*d3.request("Specimen_001_1um.csv")
+            .response( function(xhr){ return psv.parse(xhr.responseText) } )
+            .get( function(data) {
+              data.forEach(function(d) {
+                d["FSC-A"] = +d["FSC-A"];
+                d["SSC-A"] = +d["SSC-A"];
+                d["B 530/30-A"] = +d["B 530/30-A"];
+                d["B 585/42-A"] = +d["B 585/42-A"];
+                d["B 616/23 NR-A"] = +d["B 616/23 NR-A"];
+                d["B 695/40-A"] = +d["B 695/40-A"];
+                d["B 780/60-A"] = +d["B 780/60-A"];
+                d["R 660/20-A"] = +d["R 660/20-A"];
+                d["R 780/60-A"] = +d["R 780/60-A"];
+                d["V 450/40-A"] = +d["V 450/40-A"];
+                d["V 530/30-A"] = +d["V 530/30-A"];
+                d["Time"] = +d["Time"];
+              } );
+
+              console.log(data);
+              var pc = d3.parcoords()("#example")
+                         .data(data)
+                         .render()
+                         .createAxes();
+
+            } );*/
+
+
+
+        </script>
+    </body>
+</html>

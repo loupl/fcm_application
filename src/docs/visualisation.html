@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style text="type/css">
+      body {
+        font-family: Helvetica;
+      }
+
+      h1 {
+        text-align: center;
+        border-bottom: solid 2px;
+      }
+
+      a {
+        text-decoration: none;
+      }
+
+      .section {
+        border-bottom: solid 2px;
+        margin-right: 10px;
+      }
+
+      .section h2 {
+        text-align: left;
+      }
+
+      .section p {
+        text-align: justify;
+      }
+
+      .subsection {
+        margin-left: 30px;
+      }
+
+      .subsection p {
+        text-align: justify;
+      }
+
+      .subsection img {
+        width: 90%;
+        margin-left: 5%;
+        margin-right: 5%;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Visualisation</h1>
+    <div class="section">
+      <h2>Parallel Coordinates</h2>
+      Parallel Coordinates are a visualisation method characterised by the following features:
+      <ul>
+        <li>each dimension of the data set being visualised is represented as a vertical axis; these vertical axes are parallel</li>
+        <li>a data point (i.e. a single event from a <code>.fcs</code> file) is represented as a polyline</li>
+        <ul>
+          <li>for each dimension, the value of the data point in this dimension is plotted as a node on the corresponding axis</li>
+          <li>these individual nodes are connected resulting in the polyline</li>
+        </ul>
+      </ul>
+      The visualisation available in this software was created using a <a href="https://syntagmatic.github.io/parallel-coordinates/"> JavaScript library</a>, which is based on the <a href="https://d3js.org"><i>D<sup>3</sup></i> framework</a>.
+      <br>
+      To allow the software to remain responsive to user input, not all data points will be plotted at the same time. Please allow for a few moments to see all data points. The more events your file contains the longer it will take to display all data points.
+      <div class="subsection">
+        <h3>Selecting data (Brushing)</h3>
+        <p>
+          The visualisation allows so-called brushes to be applied to each individual axis. A brush is a selection over a range on an axis and will be displayed as a frame overlaying the selected area. Brushes on different axes can be combined and only data that falls into the range of all brushes will be displayed.
+          <ul>
+            <li><b>Applying a brush:</b> This can be done by clicking on an axis and dragging the mouse over the axis.</li>
+            <li><b>Changing an existing brush:</b> This can be done by selecting either the top or bottom end of an existing brush and increasing/decreasing the size of the frame it is represented by.</li>
+            <li><b>Moving an existing brush:</b> This can be done by clicking on the box representing the brush and dragging it up or down.</li>
+            <li><b>Removing an existing brush:</b> This can be done by clicking on a part of the axis, to which the brush has been applied, that is not covered by the brush. If you have applied many brushes and want to remove all, you can use the menu option <i>Clear selection</i> in the visualisation tab of the menu bar.</li>
+          </ul>
+        </p>
+        <h3>Changing axis order</h3>
+        <p>
+          The order in which the axes are displayed can be changed by clicking on an axis label, holding down the mouse button and moving the axis to the desired position.
+        </p>
+      </div>
+    </div>
+    <div class="section">
+      <h2>Visualising results of <i>flowMeans</i></h2>
+      <p>
+        The software provides the option to use a clustering algorithm, <i>flowMeans</i>, to determine groups of similar cells. For more details refer to the <i>flowMeans</i> section of the documentation.
+        <br>
+        The results of this clustering can be visualised as explained below.
+
+        <div class="subsection">
+          <h3>Visualising centroids</h3>
+          <p>
+            Centroids are cluster representatives (for more details refer to <i>flowMeans</i> documentation). They can shown once the clustering for a data set has been completed and can provide an overview of the clusters found.
+          </p>
+        </div>
+        <div class="subsection">
+          <h3>Visualising individual clusters</h3>
+          <p>
+            Individual clusters can be visualised one at a time. The visualisation of a cluster consists of
+            <ul>
+              <li>a polyline tracing the maximum of each dimension of the cluster,</li>
+              <li> a polyline tracing the minimum of each dimension,</li>
+              <li>and a polyline tracing the mean of each dimension of the cluster.</li>
+            </ul>
+            Please note that these lines do not necesssarily correspond to an individual data point but do only trace an upper and a lower bound and a cluster representative.
+          </p>
+        </div>
+      </p>
+    </div>
+  </body>
+</html>

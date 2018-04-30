@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style text="type/css">
+      body {
+        font-family: Helvetica;
+      }
+
+      h1 {
+        text-align: center;
+        border-bottom: solid 2px;
+      }
+
+      .section {
+        border-bottom: solid 2px;
+        margin-right: 10px;
+      }
+
+      .section h2 {
+        text-align: left;
+      }
+
+      .section p {
+        text-align: justify;
+      }
+
+      .subsection {
+        margin-left: 30px;
+      }
+
+      .subsection p {
+        text-align: justify;
+      }
+    </style>
+  </head>
+  <body>
+    <h1><i>flowMeans</i></h1>
+    <div class="section">
+      <h2>Background</h2>
+      <p>
+        <i>FlowMeans</i> is a clustering algorithm developed specifically for the analysis of flow cytometry data. The original paper describing the algorithm is <i>N. Aghaeepour, R. Nikolic, H. H. Hoos, and R. R. Brinkman. Rapid Cell Population Identification in Flow Cytometry Data. Cytometry Part A, 79(1), 2011</i>.
+      </p>
+    </div>
+    <div>
+      <h2>How to use <i>flowMeans</i></h2>
+      <p>
+        The clustering algorithm only uses the dimensions you selected for analysis, i.e. the dimensions that are visualised. It should only be used for data sets with a sufficient number of events (>2500), although you can still attempt running it with smaller data sets. The data will be standardised (mean centred, unit variance) for the clustering.
+        <br><br>
+        As the algorithm uses a random initialisation you can run it multiple times with the same or different values for k. Varying the value of k can sometimes provide scope for further discoveries as the number of initial clusters can affect the algorithm significantly. Should you decide to do this in combination with the <code>discard outliers automatically</code> option, please first refer to the documentation of that option.
+      </p>
+      <div class="subsection">
+        <h3>Choosing k</h3>
+        <p>
+          This input represents the maximum number of distinct groups of cells you expect to see in your data. However, based on the way the algorithm works, this value can be set higher than your initial estimate as redundant clusters are merged to form bigger clusters.
+        </p>
+      </div>
+      <div class="subsection">
+        <h3>Discarding outliers</h3>
+        <p>
+          It is strongly suggested that you use a standard pre-processing method that does not rely on clustering to prepare the data for the analysis with this software tool. Pre-processing could include, for example, outlier removal and standardisation. Most important with respect to the functioning of <i>flowMeans</i> is the removal of outliers. This is because otherwise very small clusters will be found, which can not be processed in later stages of the algorithm.
+          <br><br>
+          If you decide to use the automatic removal of outliers, please be aware of the following things:
+          <ul>
+            <li>outliers are determined by cluster size; this means that the algorithm will discard any clusters (and the data points belonging to these clusters) that contain fewer data points than dimensions being analysed</li>
+            <li>outliers found by the algorithm will be removed from the data set currently being analysed (this does not affect the <code>.fcs</code> you opened)</li>
+            <li>should you run the algorithm multiple times with this option enabled, outliers might be discarded during any of the runs; the software will record the total number of outliers discarded</li>
+            <li>if you use this option when your file contains only a small number of events but many dimensions (e.g. 500 data points but 12 dimensions) and you run the algorithm with a large value of k (e.g. 30) it is likely that too many data points will be discarded for the algorithm to return any meaningful results</li>
+          </ul>
+        </p>
+      </div>
+      <div class="subsection">
+          <h3>Possible errors</h3>
+          <p>
+            Below is a list of possible errors that can occur during the execution of <i>flowMeans</i>.
+            <br>
+            <ul>
+              <li>ClusterMemberError: This error occurs if a cluster found by the k-means algorithm contains fewer data points than dimensions are included in the analysis. In this case, the covariance matrix for this cluster might not be invertible, which would result in further errors later in the algorithm.</li>
+              <li>FailedDistanceCalculationError: This error occurs if the pairwise Mahalanobis distance cannot be calculated between two clusters. This is most likely to happen when the covariance matrix of one of the two clusters between the distance is calculated is negative. In this case, the Mahalanobis distance is not defined.</li>
+            </ul>
+          </p>
+      </div>
+    </div>
+  </body>
+</html>

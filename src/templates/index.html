@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>D3 example 01</title>
+        <script type="text/javascript" src="{{ url_for('static', filename='d3.v3.min.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='d3.parcoords.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='socket.io.js') }}"></script>
+        <script type="text/javascript" src="{{ url_for('static', filename='jquery-3.3.1.min.js') }}"></script>
+        <link rel="stylesheet" type="text/css" href=" {{ url_for('static',filename='d3.parcoords.css')}} ">
+    </head>
+    <body style="height:90%;width:95%;">
+        <div id="plot" class="parcoords" style="height:100%;width:100%;">
+          <p style="font-size:30px; font-family:sans-serif; color:rgba(0,0,0,0.3);
+          text-align:center;">
+            The parallel coordinate plot of your data will be displayed here.
+          </p>
+        </div>
+        <script type="text/javascript">
+
+            $(window).on("load", function(){
+              // determine size of screen and set height, width of pcp accordingly
+              h = $(window).height() * 0.80
+              w = $(window).width() * 0.875
+              render_rate = 100
+              par_coord_plot = null
+            });
+
+            // initialise the socket for communication
+            var socket = io.connect('http://' + document.domain + ':' + location.port);
+
+            socket.on('initial plot', function(data) {
+              // remove initial info and create pcp
+              $('#plot').empty();
+              new_pcp = d3.parcoords()("#plot")
+                          .height(h)
+                          .width(w)
+                          .margin({
+                            top: 25,
+                            left: 50,
+                            right: 25,
+                            bottom: 25
+                          });
+              // format data in such a way that parcoord library can bind it
+              var fcs_data = data['data']
+              var size = Object.keys(fcs_data).length;
+              var fcs_as_array = []
+              for (var i=0; i<size; i++){
+                  val = fcs_data[i]
+                  fcs_as_array.push(val)
+              }
+
+              // bind data to new pcp
+              new_pcp.data(fcs_as_array)
+                       .mode("queue")
+                       .rate(render_rate)
+                       .render()
+                       .brushMode("1D-axes")
+                       .reorderable()
+                       .color('#3366cc')
+                       .alpha(0.25)
+                       .brushedColor('#ff6600')
+                       .alphaOnBrushed(0.175)
+                       .rotateLabels(enabled=true);
+
+              new_pcp.on('brush', function(data){
+                  // send data back after brushing
+                  socket.emit('data brushed', data);
+              });
+
+              new_pcp.on('axesreorder', function(data){
+                  console.log("axes reorder fired")
+                  socket.emit('axes reordered');
+              });
+
+              // store reference to current pcp
+              par_coord_plot = new_pcp
+            });
+
+            socket.on('overwrite plot', function(data){
+              var fcs_data = data['data']
+              // format data in such a way that parcoord library can bind it
+              var size = Object.keys(fcs_data).length;
+              var fcs_as_array = []
+              for (var i=0; i<size; i++){
+                  val = fcs_data[i]
+                  fcs_as_array.push(val)
+              }
+              // remove existing plot and create new plot
+              $('#plot').empty();
+              new_pcp = d3.parcoords()("#plot")
+                          .height(h)
+                          .width(w)
+                          .margin({
+                            top: 25,
+                            left: 50,
+                            right: 25,
+                            bottom: 25
+                          });
+
+              new_pcp.data(fcs_as_array)
+                     .mode("queue")
+                     .rate(render_rate)
+                     .render()
+                     .brushMode("1D-axes")
+                     .reorderable()
+                     .color('#3366cc')
+                     .alpha(0.25)
+                     .brushedColor('#ff6600')
+                     .alphaOnBrushed(0.175)
+                     .rotateLabels(enabled=true);
+
+              new_pcp.on('brush', function(data){
+                   // send data back after brushing
+                   socket.emit('data brushed', data);
+              });
+
+              new_pcp.on('axesreorder', function(data){
+                  console.log("axes reorder fired")
+                  socket.emit('axes reordered');
+              });
+
+              // store reference to new pcp
+              par_coord_plot = new_pcp
+            });
+
+            socket.on('show centroids', function(data){
+              // in case another highlighting layer is still displayed
+              par_coord_plot.unhighlight()
+
+              var centroids = data['data']
+              var size = Object.keys(centroids).length;
+              var centroids_as_array = []
+
+              for (var i=0; i<size; i++){
+                  val = centroids[i]
+                  centroids_as_array.push(val)
+              }
+
+              par_coord_plot.highlight(centroids_as_array)
+            });
+
+            socket.on('hide centroids', function(){
+              par_coord_plot.unhighlight()
+            });
+
+            socket.on('show cluster', function(data){
+                par_coord_plot.unhighlight()
+
+                var cluster = data['data']
+                var size = Object.keys(cluster).length;
+                var cluster_as_array = []
+
+                for (var i=0; i<size; i++){
+                    val = cluster[i]
+                    cluster_as_array.push(val)
+                }
+                console.log(cluster)
+                console.log(cluster_as_array)
+                par_coord_plot.highlight(cluster_as_array)
+            });
+
+            socket.on('hide cluster', function(){
+                console.log('hide cluster received')
+                par_coord_plot.unhighlight()
+            });
+
+            socket.on('clear brushes', function(){
+                par_coord_plot.brushReset()
+            });
+
+        </script>
+    </body>
+</html>
